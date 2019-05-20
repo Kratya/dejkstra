@@ -5,9 +5,9 @@
 
 using namespace std;
 
-const int N_MAX = 1000;
+const int N_MAX = 10000;
 const int MAX_WEIGHT = 1000;
-const int TESTS_NUMBER = 5;
+const int TESTS_NUMBER = 1;
 
 void generate(ofstream& out)
 {
@@ -75,7 +75,7 @@ int main()
 
    for (int i = 0; i < TESTS_NUMBER; i++)
    {
-      out.open("C:/Users/User/source/repos/dejkstra/generator/tests/graph" + to_string(i + 1) + ".txt");
+      out.open("C:/Users/User/source/repos/dejkstra/dejkstra_pq/tests/graph" + to_string(i + 1) + ".txt");
       generate(out);
       out.close();
    }

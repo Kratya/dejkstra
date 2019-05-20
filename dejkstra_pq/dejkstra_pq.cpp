@@ -6,8 +6,8 @@
 #include <string>
 
 using namespace std;
-
-const int TESTS_NUMBER = 5;
+// ctrl + f5
+const int TESTS_NUMBER = 1;
 const unsigned __int64 INF = numeric_limits<unsigned __int64>::max();
 
 vector<vector<int>> scan(ifstream &in, const int &n, const int &m);
@@ -39,7 +39,7 @@ int main()
 
       ofstream out("results/out" + to_string(cnt + 1) + ".txt");
 
-      out << "Elapsed time: " << fixed << elapsed_time << " seconds" << endl;
+      out << "N = " << n << ", M = " << m << endl << "Elapsed time: " << fixed << elapsed_time << " seconds" << endl;
 
       for (int i = 0; i < res.size(); i++)
       {
