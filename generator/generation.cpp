@@ -1,70 +1,46 @@
 #include <fstream>
-#include <vector>
-#include <chrono>
+#include <ctime> 
 #include <string>
+#include <set>
 
 using namespace std;
 
-const int N_MAX = 10000;
-const int MAX_WEIGHT = 1000;
-const int TESTS_NUMBER = 1;
+typedef unsigned int UINT;
 
-void generate(ofstream& out)
+const UINT TESTS_NUMBER = 1;
+const UINT MAX_WEIGHT = 1000;
+
+void generate(const UINT &v, const UINT &e, ofstream &out)
 {
-   int M = 0, N = rand() % N_MAX + 1, c = 0;
+   UINT vertices = v, edges = e, v1 = 0, v2 = 0;
 
-   vector<vector<int>> matrix(N);
+   set<pair<UINT, UINT>> c;
 
-   for (auto& x : matrix)
-      x.resize(N);
+   if (vertices == 1)
+      edges = 0;
+   else if (edges > vertices * (vertices - 1) / 2)
+      edges = rand() % (vertices * (vertices - 1) / 2);
 
-   if (N == 1)
-      M = 0;
-   else
-      M = rand() % (N * (N - 1) / 2) + 1;
+   out << vertices << " " << edges << endl;
 
-   for (int i = 1; i < N; i++)
-      for (int j = i; j < N; j++)
+   for (UINT i = 0; i < edges; i++)
+   {
+      v1 = rand() % vertices + 1;
+
+      do
+         v2 = rand() % vertices + 1;
+      while (v1 == v2);
+
+      if (c.find(make_pair(v1, v2)) != c.end() || c.find(make_pair(v2, v1)) != c.end())
+         i--;
+      else
       {
-         if (c < M)
-            matrix[i][j] = rand() % 2 + 0;
-
-         if (matrix[i][j] == 1)
-            c++;
+         c.insert(make_pair(v1, v2));
+         out << v1 << " " << v2 << " " << rand() % MAX_WEIGHT + 1 << endl;
       }
+   }
 
-   if (c < M)
-      for (int i = 1; i < N; i++)
-      {
-         if (c == M)
-            break;
-
-         for (int j = i; j < N; j++)
-         {
-            if (c == M)
-               break;
-
-            if (matrix[i][j] == 0)
-            {
-               matrix[i][j] = 1;
-               c++;
-            }
-         }
-      }
-
-   out << N << " " << M << endl;
-
-   for (int i = 1; i < N; i++)
-      for (int j = i; j < N; j++)
-      {
-         if (matrix[i][j] == 1)
-            out << i << " ";
-
-         if (matrix[i][j] == 1)
-            out << j + 1 << " " << rand() % MAX_WEIGHT + 1 << endl;
-      }
-
-   out << rand() % N + 1 << endl;
+   out << rand() % vertices + 1;
 }
 
 int main()
@@ -73,10 +49,11 @@ int main()
 
    srand(time(NULL));
 
-   for (int i = 0; i < TESTS_NUMBER; i++)
+   for (UINT i = 0; i < TESTS_NUMBER; i++)
    {
-      out.open("C:/Users/User/source/repos/dejkstra/dejkstra_pq/tests/graph" + to_string(i + 1) + ".txt");
-      generate(out);
+      out.open("C:/Users/User/source/repos/dejkstra/dejkstra_pq/tests/graph"
+         + to_string(i + 1) + ".txt");
+      generate(100000, 100000, out);
       out.close();
    }
 
