@@ -13,9 +13,9 @@ using namespace std;
 const UINT TESTS_NUMBER = 1;
 const UINT64 INF = numeric_limits<UINT64>::max();
 
-vector<vector<UINT>> scan(ifstream &in, const UINT &n, const UINT &m);
+vector<vector<pair<UINT, UINT>>> scan(ifstream &in, const UINT &n, const UINT &m);
 
-vector<UINT64> dejkstra_pq(const vector<vector<UINT>> graph, const UINT &n, const UINT &start);
+vector<UINT64> dejkstra_pq(const vector<vector<pair<UINT, UINT>>> graph, const UINT &n, const UINT &start);
 
 int main()
 {
@@ -26,7 +26,7 @@ int main()
       UINT n = 0, m = 0;
       in >> n >> m;
 
-      vector<vector<UINT>> graph = scan(in, n, m);
+      vector<vector<pair<UINT, UINT>>> graph = scan(in, n, m);
 
       UINT start = 0;
       in >> start;
@@ -60,22 +60,23 @@ int main()
    return 0;
 }
 
-vector<vector<UINT>> scan(ifstream &in, const UINT &n, const UINT &m)
+vector<vector<pair<UINT, UINT>>> scan(ifstream &in, const UINT &n, const UINT &m)
 {
-   vector<vector<UINT>> graph(n, vector<UINT>(n));
+   vector<vector<pair<UINT, UINT>>> graph(n);
 
    for (UINT i = 0; i < m; i++)
    {
       UINT u = 0, v = 0, w = 0;
       in >> u >> v >> w;
 
-      graph[u - 1][v - 1] = graph[v - 1][u - 1] = w;
+      graph[u - 1].push_back(make_pair(v - 1, w));
+      graph[v - 1].push_back(make_pair(u - 1, w));
    }
 
    return graph;
 }
 
-vector<UINT64> dejkstra_pq(const vector<vector<UINT>> graph, const UINT &n, const UINT &start)
+vector<UINT64> dejkstra_pq(const vector<vector<pair<UINT, UINT>>> graph, const UINT &n, const UINT &start)
 {
    priority_queue<pair<UINT, UINT>, vector<pair<UINT, UINT>>, greater<pair<UINT, UINT>>> pq;
    vector<UINT64> res(n, INF);
@@ -85,15 +86,19 @@ vector<UINT64> dejkstra_pq(const vector<vector<UINT>> graph, const UINT &n, cons
 
    while (!pq.empty())
    {
-      pair<UINT, UINT> s = pq.top();
+      UINT u = pq.top().second;
       pq.pop();
 
-      for (UINT i = 0; i < n; i++)
-         if (graph[s.second][i] && res[i] > res[s.second] + graph[s.second][i])
+      for (auto x : graph[u])
+      {
+         UINT v = x.first, w = x.second;
+
+         if (res[v] > res[u] + w)
          {
-            res[i] = res[s.second] + graph[s.second][i];
-            pq.push(make_pair(res[i], i));
+            res[v] = res[u] + w;
+            pq.push(make_pair(res[v], v));
          }
+      }
    }
 
    return res;
