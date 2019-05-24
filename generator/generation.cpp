@@ -1,7 +1,9 @@
 #include <fstream>
+#include <iostream>
 #include <ctime> 
 #include <string>
 #include <set>
+#include <filesystem>
 
 using namespace std;
 
@@ -9,6 +11,34 @@ typedef unsigned int UINT;
 
 const UINT TESTS_NUMBER = 1;
 const UINT MAX_WEIGHT = 1000;
+
+void generate(const UINT &v, const UINT &e, ofstream &out);
+
+bool copy_file(const string &src, const string &dest);
+
+int main()
+{
+   ofstream out;
+   UINT n = 0, m = 0;
+
+   srand(time(NULL));
+
+   for (UINT i = 0; i < TESTS_NUMBER; i++)
+   {
+      string path = "C:/Users/User/source/repos/dejkstra/dejkstra/tests/graph" + to_string(i + 1) + ".txt";
+      string pq_path = "C:/Users/User/source/repos/dejkstra/dejkstra_pq/tests/graph" + to_string(i + 1) + ".txt";
+      out.open(path);
+      
+      cin >> n >> m;
+      generate(n, m, out);
+
+      copy_file(path, pq_path);
+
+      out.close();
+   }
+
+   return 0;
+}
 
 void generate(const UINT &v, const UINT &e, ofstream &out)
 {
@@ -40,22 +70,15 @@ void generate(const UINT &v, const UINT &e, ofstream &out)
       }
    }
 
-   out << rand() % vertices + 1;
+   out << rand() % vertices + 1 << endl;
 }
 
-int main()
+bool copy_file(const string &src, const string &dest)
 {
-   ofstream out;
+   ifstream source(src);
+   ofstream destination(dest);
 
-   srand(time(NULL));
+   destination << source.rdbuf();
 
-   for (UINT i = 0; i < TESTS_NUMBER; i++)
-   {
-      out.open("C:/Users/User/source/repos/dejkstra/dejkstra_pq/tests/graph"
-         + to_string(i + 1) + ".txt");
-      generate(100000, 100000, out);
-      out.close();
-   }
-
-   return 0;
+   return source && destination;
 }
